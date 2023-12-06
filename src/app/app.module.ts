@@ -26,7 +26,7 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
     MatTableModule,
     MatToolbarModule,
     MatButtonModule,
-    MatIconModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]
