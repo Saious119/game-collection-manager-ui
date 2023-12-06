@@ -1,19 +1,19 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Component, Inject, OnInit } from '@angular/core';
-import {MatTableModule} from '@angular/material/table';
+import {MatLegacyTableModule as MatTableModule} from '@angular/material/legacy-table';
 import {
-  MatDialog,
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-  MatDialogTitle,
-  MatDialogContent,
-  MatDialogActions,
-  MatDialogClose,
-} from '@angular/material/dialog';
-import {MatButtonModule} from '@angular/material/button';
+  MatLegacyDialog as MatDialog,
+  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
+  MatLegacyDialogRef as MatDialogRef,
+  MatLegacyDialogTitle as MatDialogTitle,
+  MatLegacyDialogContent as MatDialogContent,
+  MatLegacyDialogActions as MatDialogActions,
+  MatLegacyDialogClose as MatDialogClose,
+} from '@angular/material/legacy-dialog';
+import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
 import {FormsModule} from '@angular/forms';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatLegacyInputModule as MatInputModule} from '@angular/material/legacy-input';
+import {MatLegacyFormFieldModule as MatFormFieldModule} from '@angular/material/legacy-form-field';
 
 export interface PeriodicElement {
   name: string;
