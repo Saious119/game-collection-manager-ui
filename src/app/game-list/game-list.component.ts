@@ -1,19 +1,17 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Component, Inject, OnInit } from '@angular/core';
-import {MatLegacyTableModule as MatTableModule} from '@angular/material/legacy-table';
-import {
-  MatLegacyDialog as MatDialog,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialogRef as MatDialogRef,
-  MatLegacyDialogTitle as MatDialogTitle,
-  MatLegacyDialogContent as MatDialogContent,
-  MatLegacyDialogActions as MatDialogActions,
-  MatLegacyDialogClose as MatDialogClose,
-} from '@angular/material/legacy-dialog';
-import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
 import {FormsModule} from '@angular/forms';
-import {MatLegacyInputModule as MatInputModule} from '@angular/material/legacy-input';
-import {MatLegacyFormFieldModule as MatFormFieldModule} from '@angular/material/legacy-form-field';
+
+import {
+  HlmCaptionComponent,
+  HlmTableComponent,
+  HlmTdComponent,
+  HlmThComponent,
+  HlmTrowComponent,
+} from '@spartan-ng/ui-table-helm';
+import { GameDataModel } from '../core/services/shared/models/game-data-model';
+import { ApiService } from 'src/services/apiservice';
+
 
 export interface PeriodicElement {
   name: string;
@@ -49,42 +47,19 @@ export interface DialogData {
 })
 export class GameListComponent implements OnInit {
 
-  name = '';
-  animal  = '';
+  gameDataList: GameDataModel[] = [];
 
-  constructor(public dialog: MatDialog) {}
+  constructor(private apiService: ApiService) {}
 
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
+  displayedColumns: string[] = ['name','releaseDate','platform','metacriticScore','howlong'];
   dataSource = ELEMENT_DATA;
   
   ngOnInit(): void {
       console.log("Loading Table");
+      this.apiService.getGameCollection("Test").subscribe((res: GameDataModel[]) => {
+        console.log(res);
+        this.gameDataList = res;
+      })
   }
 
-  openDialog(): void {
-    const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
-      data: {name: this.name, animal: this.animal},
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      this.animal = result;
-    });
-  }
-
-}
-
-@Component({
-  selector: 'dialog-overview-example-dialog',
-  templateUrl: 'new-game-dialog.html'
-})
-export class DialogOverviewExampleDialog {
-  constructor(
-    public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-  ) {}
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
 }
