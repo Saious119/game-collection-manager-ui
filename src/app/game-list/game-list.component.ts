@@ -1,5 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {MatTableModule} from '@angular/material/table';
 import { GameDataModel } from '../core/services/shared/models/game-data-model';
 import { ApiService } from 'src/services/apiservice';
 
