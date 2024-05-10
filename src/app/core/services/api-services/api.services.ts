@@ -9,7 +9,7 @@ import { GameDataModel } from '../shared/models/game-data-model';
 export class ApiService {
   constructor(private http: HttpClient) {}
 
-    public getGameList(user: string): Observable<GameDataModel[]> {
+    public getGameCollection(user: string): Observable<GameDataModel[]> {
         console.log("Getting game list data from api...");
         //return this.httpClient.get<GameDataModel[]>('localhost:5000/GameCollection/GetCollection'+user);
         return this.http.get<any>('localhost:5000/GameCollection/GetCollection'+user); 

@@ -8,6 +8,9 @@ import { GameListComponent } from './game-list/game-list.component';
 import { TopBarComponent } from './top-bar/top-bar.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatToolbarModule} from '@angular/material/toolbar'
 
 
 @NgModule({
@@ -19,6 +22,9 @@ import { MatTableModule } from '@angular/material/table';
     imports: [
         BrowserModule,
         MatTableModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatButtonModule,
         HttpClientModule
     ],
     providers: [],

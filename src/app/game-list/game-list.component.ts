@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { GameDataModel } from '../core/services/shared/models/game-data-model';
-import { ApiService } from 'src/services/apiservice';
+import { ApiService } from '../core/services/api-services/api.services';
 
 
 @Component({
