@@ -8,8 +8,7 @@ import { HowLongToBeatService, HowLongToBeatEntry } from 'howlongtobeat';
   providedIn: 'root', // Or specify a different module
 })
 export class ApiService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   public getGameCollection(user: string): Observable<GameDataModel[]> {
     console.log('Getting game list data from api...');
@@ -20,9 +19,25 @@ export class ApiService {
   }
 
   public postNewGame(user: string, data: GameDataModel) {
-    this.http.post('http://localhost:5000/GameCollection/AddNewGame?user='+user, data).subscribe(res => {
-      console.log(res);
-    })
+    this.http
+      .post(
+        'http://localhost:5000/GameCollection/AddNewGame?user=' + user,
+        data
+      )
+      .subscribe((res) => {
+        console.log(res);
+      });
+  }
+
+  public removeGame(user: string, data: GameDataModel) {
+    return this.http
+      .post(
+        'http://localhost:5000/GameCollection/DeleteGame?user=' + user,
+        data
+      )
+      .subscribe((res) => {
+        console.log(res);
+      });
   }
 
   public getConsoleList(): Observable<string[]> {
@@ -30,8 +45,11 @@ export class ApiService {
     return this.http.get<string[]>('assets/console-list.json');
   }
 
-  public getHowLongToBeat(name: string): Observable<any> {
+  public getHowLongToBeat(name: string) {
     let hltbService = new HowLongToBeatService();
-    return of(hltbService.search(name));
+    hltbService.search(name).then((result) => {
+      console.log(result);
+      return of(result[0].gameplayMain);
+    });
   }
 }
