@@ -1,0 +1,33 @@
+<div class="view">
+  <mat-form-field>
+    <mat-label>Game Name</mat-label>
+    <input matInput [(ngModel)]="data.name" placeholder="Name"/>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Release Data</mat-label>
+    <input matInput [(ngModel)]="data.releaseDate" placeholder="MM/DD/YYYY"/>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Platform</mat-label>
+    <mat-select [(ngModel)]="data.platform">
+      <div *ngFor="let console of consoleList">
+          <mat-option value="console">{{console}}</mat-option>
+      </div>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Metacritic Score</mat-label>
+    <input matInput placeholder="100" [(ngModel)]="data.metacriticScore"/>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>How Long To Beat Time</mat-label>
+    <input matInput placeholder="18.5" [(ngModel)]="data.howlong"/>
+  </mat-form-field>
+  <div class="button-row">
+    <div class="right-buttons">
+      <button mat-flat-button class="addButton" color="warn" (click)="noClick()">Cancel</button>
+      <button mat-flat-button class="addButton" color="accent" (click)="submit()">Submit</button>
+    </div>
+  </div>
+</div>
+

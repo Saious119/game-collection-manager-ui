@@ -1,30 +1,35 @@
-<table mat-table [dataSource]="gameDataList" class="mat-elevation-z8">
+<div class="view">
+  <div class="button-row">
+    <button mat-flat-button class="addButton" color="accent" (click)="addNewGame()"><span class="material-icons">&#xE145;</span></button>
+  </div>
 
+  <table mat-table [dataSource]="gameDataList" class="mat-elevation-z8">
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef> Name </th>
-      <td mat-cell *matCellDef="let game"> {{game.name}} </td>
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let game">{{ game.name }}</td>
     </ng-container>
 
     <ng-container matColumnDef="releaseDate">
-      <th mat-header-cell *matHeaderCellDef> Release Date </th>
-      <td mat-cell *matCellDef="let game"> {{game.releaseDate}} </td>
+      <th mat-header-cell *matHeaderCellDef>Release Date</th>
+      <td mat-cell *matCellDef="let game">{{ game.releaseDate }}</td>
     </ng-container>
-  
+
     <ng-container matColumnDef="platform">
-      <th mat-header-cell *matHeaderCellDef> Platform </th>
-      <td mat-cell *matCellDef="let game"> {{game.platform}} </td>
+      <th mat-header-cell *matHeaderCellDef>Platform</th>
+      <td mat-cell *matCellDef="let game">{{ game.platform }}</td>
     </ng-container>
-  
+
     <ng-container matColumnDef="metacriticScore">
-      <th mat-header-cell *matHeaderCellDef> Metacritic Score </th>
-      <td mat-cell *matCellDef="let game"> {{game.metacriticScore}} </td>
+      <th mat-header-cell *matHeaderCellDef>Metacritic Score</th>
+      <td mat-cell *matCellDef="let game">{{ game.metacriticScore }}</td>
     </ng-container>
 
     <ng-container matColumnDef="howlong">
-        <th mat-header-cell *matHeaderCellDef> How Long To Beat Time</th>
-        <td mat-cell *matCellDef="let game">{{game.howlong}}</td>
+      <th mat-header-cell *matHeaderCellDef>How Long To Beat Time</th>
+      <td mat-cell *matCellDef="let game">{{ game.howlong }}</td>
     </ng-container>
-  
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>
