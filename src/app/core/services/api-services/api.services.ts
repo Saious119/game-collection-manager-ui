@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs'; // Make sure you have this import
 import { GameDataModel } from '../shared/models/game-data-model';
 import { HowLongToBeatService, HowLongToBeatEntry } from 'howlongtobeat';
+import { MetaCriticResponse } from '../shared/models/metacritic-response-model';
 
 @Injectable({
   providedIn: 'root', // Or specify a different module
@@ -19,25 +20,17 @@ export class ApiService {
   }
 
   public postNewGame(user: string, data: GameDataModel) {
-    this.http
-      .post(
-        'http://localhost:5000/GameCollection/AddNewGame?user=' + user,
-        data
-      )
-      .subscribe((res) => {
-        console.log(res);
-      });
+    return this.http.post(
+      'http://localhost:5000/GameCollection/AddNewGame?user=' + user,
+      data
+    );
   }
 
   public removeGame(user: string, data: GameDataModel) {
-    return this.http
-      .post(
-        'http://localhost:5000/GameCollection/DeleteGame?user=' + user,
-        data
-      )
-      .subscribe((res) => {
-        console.log(res);
-      });
+    return this.http.post(
+      'http://localhost:5000/GameCollection/DeleteGame?user=' + user,
+      data
+    );
   }
 
   public getConsoleList(): Observable<string[]> {
@@ -45,11 +38,17 @@ export class ApiService {
     return this.http.get<string[]>('assets/console-list.json');
   }
 
-  public getHowLongToBeat(name: string) {
-    let hltbService = new HowLongToBeatService();
-    hltbService.search(name).then((result) => {
-      console.log(result);
-      return of(result[0].gameplayMain);
-    });
+  public getMetaCriticScore(name: string, platform: string) {
+    return this.http.get<MetaCriticResponse>(
+      'http://localhost:5000/GameCollection/GetMetaCriticInfo?name=' +
+        name +
+        '&platform=' +
+        platform
+    );
+  }
+  public getHowLongToBeat(name: string): Observable<HowLongToBeatEntry> {
+    return this.http.get<HowLongToBeatEntry>(
+      'http://localhost:3001/api/game/' + name
+    );
   }
 }

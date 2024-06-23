@@ -4,8 +4,14 @@
     <input matInput [(ngModel)]="data.name" placeholder="Name" />
   </mat-form-field>
   <mat-form-field>
-    <mat-label>Release Data</mat-label>
-    <input matInput [(ngModel)]="data.releaseDate" placeholder="MM/DD/YYYY" />
+    <mat-label>Choose a date</mat-label>
+    <input
+      matInput
+      [matDatepicker]="picker"
+      (dateChange)="updateDate($event)"
+    />
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
   <mat-form-field>
     <mat-label>Platform</mat-label>
@@ -39,7 +45,10 @@
         color="accent"
         (click)="submit()"
       >
-        Submit
+        <div *ngIf="!spinner">Submit</div>
+        <div class="submit-button-spinner" *ngIf="spinner">
+          <mat-spinner [diameter]="25"></mat-spinner>
+        </div>
       </button>
     </div>
   </div>

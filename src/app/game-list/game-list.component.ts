@@ -4,6 +4,7 @@ import { ApiService } from '../core/services/api-services/api.services';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import {
   MatDialog,
   MAT_DIALOG_DATA,
@@ -13,6 +14,9 @@ import {
   MatDialogActions,
   MatDialogClose,
 } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SharedDataService } from '../core/services/shared/shared.data.service';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-game-list',
@@ -22,7 +26,11 @@ import {
 export class GameListComponent implements OnInit {
   gameDataList: GameDataModel[] = [];
 
-  constructor(private apiService: ApiService, private dialog: MatDialog) {}
+  constructor(
+    private apiService: ApiService,
+    private dialog: MatDialog,
+    private sharedDataService: SharedDataService
+  ) {}
 
   displayedColumns: string[] = [
     'name',
@@ -35,13 +43,11 @@ export class GameListComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('Loading Table');
-    this.apiService
-      .getGameCollection('Test')
-      .subscribe((res: GameDataModel[]) => {
-        console.log(res);
-        this.gameDataList = res;
-        console.log(this.gameDataList);
-      });
+    this.sharedDataService.getCurrentGameList();
+    this.sharedDataService.currentGameList$.subscribe((res) => {
+      console.log(res);
+      this.gameDataList = res;
+    });
   }
 
   addNewGame(): void {
@@ -49,26 +55,20 @@ export class GameListComponent implements OnInit {
       height: '470px',
       width: '600px',
     });
-    dialogRef.afterClosed().subscribe((res) => {
-      console.log(res);
-      this.apiService
-        .getGameCollection('Test')
-        .subscribe((res2: GameDataModel[]) => {
-          this.gameDataList = res2;
-          console.log(this.gameDataList);
-        });
-    });
+    dialogRef.afterClosed().subscribe((res) => {});
   }
 
   removeGame(game: GameDataModel): void {
-    this.apiService.removeGame('Test', game);
-    this.apiService
-      .getGameCollection('Test')
-      .subscribe((res: GameDataModel[]) => {
-        console.log(res);
-        this.gameDataList = res;
-        console.log(this.gameDataList);
-      });
+    this.apiService.removeGame('Test', game).subscribe((removeRes) => {
+      this.apiService
+        .getGameCollection('Test')
+        .subscribe((res: GameDataModel[]) => {
+          console.log(res);
+          //this.gameDataList = res;
+          this.sharedDataService.setCurrentGameList(res);
+          console.log(this.gameDataList);
+        });
+    });
   }
 }
 
@@ -79,9 +79,9 @@ export class GameListComponent implements OnInit {
 })
 export class NewGameDialogComponent implements OnInit {
   consoleList: string[] = [];
-
+  spinner: boolean = false;
   data: GameDataModel = {
-    name: 'none',
+    name: 'None',
     releaseDate: '1/1/1900',
     platform: 'Other',
     metacriticScore: '0',
@@ -90,7 +90,8 @@ export class NewGameDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<NewGameDialogComponent>,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private sharedDataService: SharedDataService
   ) {}
 
   ngOnInit(): void {
@@ -100,11 +101,33 @@ export class NewGameDialogComponent implements OnInit {
     });
   }
 
+  updateDate(dateObject: MatDatepickerInputEvent<Date>) {
+    //const stringified = JSON.stringify(dateObject);
+    //this.data.releaseDate = stringified.substring(1, 11);
+    if (dateObject.value != null) {
+      this.data.releaseDate = dateObject.value.toLocaleDateString();
+      console.log(this.data.releaseDate);
+    }
+  }
+
   submit(): void {
+    this.spinner = true;
     console.log('Submitted New Game');
-    console.log(this.data);
-    this.apiService.postNewGame('Test', this.data);
-    this.dialogRef.close();
+    this.apiService
+      .getMetaCriticScore(this.data.name, this.data.platform)
+      .subscribe((res) => {
+        this.data.metacriticScore = res.metaScore.toString();
+        this.apiService.getHowLongToBeat(this.data.name).subscribe((res) => {
+          this.data.howlong = res.gameplayMain.toString();
+          this.apiService
+            .postNewGame('Test', this.data)
+            .subscribe((postRes) => {
+              this.sharedDataService.getCurrentGameList();
+              this.spinner = false;
+              this.dialogRef.close();
+            });
+        });
+      });
   }
 
   noClick(): void {
