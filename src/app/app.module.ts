@@ -9,7 +9,7 @@ import {
   NewGameDialogComponent,
 } from './game-list/game-list.component';
 import { TopBarComponent } from './top-bar/top-bar.component';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,29 +22,22 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    GameListComponent,
-    NewGameDialogComponent,
-    TopBarComponent,
-  ],
-  imports: [
-    BrowserModule,
-    MatTableModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatProgressSpinnerModule,
-    MatDatepickerModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    FormsModule,
-  ],
-  providers: [provideNativeDateAdapter()],
-  bootstrap: [AppComponent],
-})
+@NgModule({ declarations: [
+        AppComponent,
+        GameListComponent,
+        NewGameDialogComponent,
+        TopBarComponent,
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        MatTableModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatButtonModule,
+        MatSelectModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatProgressSpinnerModule,
+        MatDatepickerModule,
+        BrowserAnimationsModule,
+        FormsModule], providers: [provideNativeDateAdapter(), provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule {}
