@@ -25,6 +25,7 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 })
 export class GameListComponent implements OnInit {
   gameDataList: GameDataModel[] = [];
+  spinner: boolean = false;
 
   constructor(
     private apiService: ApiService,
@@ -43,10 +44,12 @@ export class GameListComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('Loading Table');
+    this.spinner=true;
     this.sharedDataService.getCurrentGameList();
     this.sharedDataService.currentGameList$.subscribe((res) => {
       console.log(res);
       this.gameDataList = res;
+      this.spinner =false;
     });
   }
 

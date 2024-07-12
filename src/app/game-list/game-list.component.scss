@@ -22,3 +22,8 @@ table {
 .removeButton {
   cursor: pointer !important;
 }
+.loading-spinner {
+  display: flex;
+  align-self: center;
+  align-content: center;
+}
