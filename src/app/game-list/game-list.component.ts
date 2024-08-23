@@ -121,7 +121,6 @@ export class NewGameDialogComponent implements OnInit {
       .subscribe((res) => {
         this.data.metacriticScore = res.metaScore.toString();
         this.apiService.getHowLongToBeat(this.data.name).subscribe((res) => {
-          this.data.howlong = res.gameplayMain.toString();
           this.apiService
             .postNewGame('Test', this.data)
             .subscribe((postRes) => {
@@ -129,6 +128,17 @@ export class NewGameDialogComponent implements OnInit {
               this.spinner = false;
               this.dialogRef.close();
             });
+        },
+        (err) => {
+          console.log("howlong is not available");
+          this.data.howlong = "0";
+          this.apiService
+          .postNewGame('Test', this.data)
+          .subscribe((postRes) => {
+            this.sharedDataService.getCurrentGameList();
+            this.spinner = false;
+            this.dialogRef.close();
+          });
         });
       });
   }
