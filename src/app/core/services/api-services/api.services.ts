@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs'; // Make sure you have this import
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, Observable, of, throwError } from 'rxjs'; // Make sure you have this import
 import { GameDataModel } from '../shared/models/game-data-model';
 import { HowLongToBeatService, HowLongToBeatEntry } from 'howlongtobeat';
 import { MetaCriticResponse } from '../shared/models/metacritic-response-model';
@@ -50,5 +50,17 @@ export class ApiService {
     return this.http.get<HowLongToBeatEntry>(
       'http://localhost:3001/api/game/' + name
     );
+  }
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+      // Client-side or network error
+      errorMessage = `An error occurred: ${error.error.message}`;
+    } else {
+      // Backend error
+      errorMessage = `Server returned code: ${error.status}, error message is: ${error.message}`;
+    }
+    console.error(errorMessage);
+    return throwError(errorMessage);
   }
 }

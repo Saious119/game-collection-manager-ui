@@ -17,6 +17,7 @@ import {
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SharedDataService } from '../core/services/shared/shared.data.service';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-game-list',
@@ -44,12 +45,12 @@ export class GameListComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('Loading Table');
-    this.spinner=true;
+    this.spinner = true;
     this.sharedDataService.getCurrentGameList();
     this.sharedDataService.currentGameList$.subscribe((res) => {
       console.log(res);
       this.gameDataList = res;
-      this.spinner =false;
+      this.spinner = false;
     });
   }
 
@@ -116,21 +117,38 @@ export class NewGameDialogComponent implements OnInit {
   submit(): void {
     this.spinner = true;
     console.log('Submitted New Game');
+    this.getMetacriticScore().subscribe((res) => {
+      this.data.metacriticScore = res;
+    });
+    this.apiService.postNewGame('Test', this.data).subscribe((postRes) => {
+      this.sharedDataService.getCurrentGameList();
+      this.spinner = false;
+      this.dialogRef.close();
+    });
+  }
+
+  getMetacriticScore() {
     this.apiService
       .getMetaCriticScore(this.data.name, this.data.platform)
-      .subscribe((res) => {
-        this.data.metacriticScore = res.metaScore.toString();
-        this.apiService.getHowLongToBeat(this.data.name).subscribe((res) => {
-          this.data.howlong = res.gameplayMain.toString();
-          this.apiService
-            .postNewGame('Test', this.data)
-            .subscribe((postRes) => {
-              this.sharedDataService.getCurrentGameList();
-              this.spinner = false;
-              this.dialogRef.close();
-            });
-        });
-      });
+      .subscribe(
+        (res) => {
+          return of(res.metaScore.toString());
+        },
+        (error) => {
+          return of('0');
+        }
+      );
+  }
+
+  getHowLong(): void {
+    this.apiService.getHowLongToBeat(this.data.name).subscribe(
+      (res) => {
+        this.data.howlong = res.gameplayMain.toString();
+      },
+      (error) => {
+        this.data.howlong = '0';
+      }
+    );
   }
 
   noClick(): void {
