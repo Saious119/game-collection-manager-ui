@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, Observable, of, throwError } from 'rxjs'; // Make sure you have this import
+import { catchError, Observable, of, retry, throwError } from 'rxjs'; // Make sure you have this import
 import { GameDataModel } from '../shared/models/game-data-model';
 import { HowLongToBeatService, HowLongToBeatEntry } from 'howlongtobeat';
 import { MetaCriticResponse } from '../shared/models/metacritic-response-model';
