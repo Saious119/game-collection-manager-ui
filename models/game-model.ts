@@ -16,4 +16,6 @@ export interface Game {
   release_dates: ReleaseDates[];
   summary: string;
   multiplayer_mode_flags: MultiplayerModes;
+  howLongToBeat: number;
+  status: string;
 }
