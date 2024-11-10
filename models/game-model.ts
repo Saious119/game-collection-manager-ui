@@ -17,5 +17,6 @@ export interface Game {
   summary: string;
   multiplayer_mode_flags: MultiplayerModes;
   howLongToBeat: number;
+  metacriticScore: number;
   status: string;
 }

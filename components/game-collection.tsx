@@ -1,55 +1,48 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserCircleIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-type Game = {
-  id: number;
-  name: string;
-  platform: string;
-  releaseDate: string;
-  metacriticScore: number;
-  howLongToBeat: number;
-};
+import { Game } from "@/models/game-model";
+import axios from "axios";
+import { LoadingSpinner } from "./ui/spinner";
+import NewGameDialog from "./new-game-dialog";
 
 type SortKey = keyof Omit<Game, "id">;
 
-const initialGames: Game[] = [
-  {
-    id: 1,
-    name: "The Legend of Zelda: Breath of the Wild",
-    platform: "Switch",
-    releaseDate: "2017-03-03",
-    metacriticScore: 97,
-    howLongToBeat: 50,
-  },
-  {
-    id: 2,
-    name: "Red Dead Redemption 2",
-    platform: "PS4",
-    releaseDate: "2018-10-26",
-    metacriticScore: 97,
-    howLongToBeat: 50,
-  },
-  {
-    id: 3,
-    name: "Hades",
-    platform: "PC",
-    releaseDate: "2020-09-17",
-    metacriticScore: 93,
-    howLongToBeat: 21,
-  },
-];
-
 export function GameCollection() {
   const [activeTab, setActiveTab] = useState("collection");
-  const [games, setGames] = useState<Game[]>(initialGames);
+  //const [games, setGames] = useState<Game[]>(initialGames);
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: "ascending" | "descending";
   } | null>(null);
+
+  const [games, setGames] = useState<Game[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get("https://localhost:5001/GameCollection/GetCollection/test")
+      .then((response) => {
+        setGames(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <LoadingSpinner></LoadingSpinner>;
+  }
+  if (error) {
+    console.log(error);
+    return <div>Error: {error}</div>;
+  }
 
   const sortedGames = [...games].sort((a, b) => {
     if (!sortConfig) return 0;
@@ -71,21 +64,31 @@ export function GameCollection() {
     setSortConfig({ key, direction });
   };
 
-  const handleDelete = (id: number) => {
-    setGames(games.filter((game) => game.id !== id));
+  const handleDelete = (game: Game) => {
+    axios
+      .post(
+        "https://localhost:5001/GameCollection/DeleteGame?user=test",
+        game,
+        { headers: { "Content-Type": "application/json" } }
+      )
+      .then((res2) => {
+        console.log(res2);
+      })
+      .catch((error) => {
+        console.error("There was an error adding a game!", error);
+      });
+    //setGames(games.filter((game) => game.id !== id));
   };
 
-  const handleAdd = () => {
-    const newGame: Game = {
-      id: games.length + 1,
-      name: "New Game",
-      platform: "Platform",
-      releaseDate: "YYYY-MM-DD",
-      metacriticScore: 0,
-      howLongToBeat: 0,
-    };
-    setGames([...games, newGame]);
-  };
+  // const handleAdd = () => {
+  //   const newGame: Game = {
+  //     id: games.length + 1,
+  //     name: "New Game",
+  //     metacriticScore: 0,
+  //     howLongToBeat: 0,
+  //   };
+  //   setGames([...games, newGame]);
+  // };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -145,12 +148,12 @@ export function GameCollection() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {game.name}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {game.platform}
+                        {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {game.platforms[0]}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {game.releaseDate}
-                        </td>
+                          {game.release_dates[0]}
+                        </td> */}
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {game.metacriticScore}
                         </td>
@@ -161,7 +164,7 @@ export function GameCollection() {
                           <button
                             type="button"
                             title="delete-button"
-                            onClick={() => handleDelete(game.id)}
+                            onClick={() => handleDelete(game)}
                             className="text-red-600 hover:text-red-900"
                           >
                             <TrashIcon className="h-5 w-5" />
@@ -176,7 +179,8 @@ export function GameCollection() {
           ))}
         </Tabs>
         <div className="mt-4">
-          <Button onClick={handleAdd}>Add Game</Button>
+          {/* <Button onClick={openAddDialog}>Add Game</Button> */}
+          <NewGameDialog></NewGameDialog>
         </div>
       </main>
     </div>
